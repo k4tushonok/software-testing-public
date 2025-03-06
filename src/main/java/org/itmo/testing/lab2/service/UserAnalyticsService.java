@@ -25,6 +25,19 @@ public class UserAnalyticsService {
         if (!users.containsKey(userId)) {
             throw new IllegalArgumentException("User not found");
         }
+        if (getUserSessions(userId) != null) {
+            for (Session session : getUserSessions(userId)) {
+                if (session.getLoginTime().equals(loginTime) && session.getLogoutTime().equals(logoutTime)) {
+                    throw new IllegalArgumentException("Session already recorded with these dates");
+                }
+            }
+        }
+        if (logoutTime.isBefore(loginTime)) {
+            throw new IllegalArgumentException("Login time must before logout time");
+        }
+        if (LocalDateTime.now().isBefore(logoutTime)) {
+            throw new IllegalArgumentException("Login time must be before the future");
+        }
         Session session = new Session(loginTime, logoutTime);
         userSessions.computeIfAbsent(userId, k -> new ArrayList<>()).add(session);
     }

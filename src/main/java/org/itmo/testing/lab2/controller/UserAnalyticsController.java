@@ -21,8 +21,12 @@ public class UserAnalyticsController {
                 ctx.status(400).result("Missing parameters");
                 return;
             }
-            boolean success = service.registerUser(userId, userName);
-            ctx.result("User registered: " + success);
+            try {
+                boolean success = service.registerUser(userId, userName);
+                ctx.result("User registered: " + success);
+            } catch (Exception e) {
+                ctx.status(400).result(e.getMessage());
+            }
         });
 
         app.post("/recordSession", ctx -> {
@@ -45,12 +49,17 @@ public class UserAnalyticsController {
 
         app.get("/totalActivity", ctx -> {
             String userId = ctx.queryParam("userId");
-            if (userId == null) {
+            if (userId == null || service.getUser(userId) == null) {
                 ctx.status(400).result("Missing userId");
                 return;
             }
-            long minutes = service.getTotalActivityTime(userId);
-            ctx.result("Total activity: " + minutes + " minutes");
+            try {
+                long minutes = service.getTotalActivityTime(userId);
+                ctx.result("Total activity: " + minutes + " minutes");
+            }
+            catch (Exception e) {
+                ctx.status(400).result("Invalid data: " + e.getMessage());
+            }
         });
 
         app.get("/inactiveUsers", ctx -> {
@@ -61,6 +70,7 @@ public class UserAnalyticsController {
             }
             try {
                 int days = Integer.parseInt(daysParam);
+                if (days < 0) throw new NumberFormatException();
                 List<String> inactiveUsers = service.findInactiveUsers(days);
                 ctx.json(inactiveUsers);
             } catch (NumberFormatException e) {
@@ -83,6 +93,7 @@ public class UserAnalyticsController {
                 ctx.status(400).result("Invalid data: " + e.getMessage());
             }
         });
+
         return app;
     }
 }

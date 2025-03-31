@@ -26,7 +26,7 @@ jobs:
         run: ./gradlew test
 
       - name: Upload Test Reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-reports
           path: build/test-results

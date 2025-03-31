@@ -1,6 +1,7 @@
 package org.itmo.testing.lab2.service;
 
 
+import java.util.List;
 import java.util.Optional;
 
 public class UserStatusService {
@@ -25,7 +26,11 @@ public class UserStatusService {
     }
 
     public Optional<String> getUserLastSessionDate(String userId) {
-        UserAnalyticsService.Session lastSession = userAnalyticsService.getUserSessions(userId).getLast();
+        List<UserAnalyticsService.Session> sessions = userAnalyticsService.getUserSessions(userId);
+        if (sessions == null || sessions.isEmpty()) {
+            return Optional.empty();
+        }
+        UserAnalyticsService.Session lastSession = sessions.get(sessions.size() - 1);
         return Optional.of(lastSession.getLogoutTime().toLocalDate().toString());
     }
 }

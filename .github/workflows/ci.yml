@@ -23,7 +23,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Tests
-        run: ./gradlew test jacocoTestReport allureReport
+        run: ./gradlew test jacocoTestReport allureReport spotbugsMain
 
       - name: Verify Test Coverage
         run: ./gradlew jacocoTestCoverageVerification
@@ -51,6 +51,12 @@ jobs:
         with:
           name: allure-report
           path: build/reports/allure-report
+
+      - name: Upload SpotBugs Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: spotbugs-report
+          path: build/reports/spotbugs/main/html
 
   deploy:
     needs: test

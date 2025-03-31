@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'jacoco'
+    id 'io.qameta.allure' version "2.11.2"
 }
 
 group = 'org.usvm'
@@ -21,10 +22,13 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation("org.mockito:mockito-core:5.15.2")
 
+    testImplementation("io.qameta.allure:allure-junit5:2.25.0")
+    testImplementation("io.qameta.allure:allure-rest-assured:2.25.0")
 }
 
 test {
     useJUnitPlatform()
+    systemProperty("allure.results.directory", "build/allure-results")
 }
 
 jacoco {
@@ -45,6 +49,20 @@ tasks.jacocoTestCoverageVerification {
         rule {
             limit {
                 minimum = 0.80
+            }
+        }
+    }
+}
+
+allure {
+    report {
+        version.set("2.25.0")
+    }
+    adapter {
+        aspectjWeaver.set(true)
+        frameworks {
+            junit5 {
+                enabled.set(true)
             }
         }
     }

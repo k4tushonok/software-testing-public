@@ -23,7 +23,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Tests
-        run: ./gradlew test jacocoTestReport
+        run: ./gradlew test jacocoTestReport allureReport
 
       - name: Verify Test Coverage
         run: ./gradlew jacocoTestCoverageVerification
@@ -39,3 +39,34 @@ jobs:
         with:
           name: jacoco-report
           path: build/reports/jacoco/test/html
+
+      - name: Upload Allure Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: build/allure-results
+
+      - name: Upload Allure Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: build/reports/allure-report
+
+deploy:
+  needs: test
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download Allure Report
+      uses: actions/download-artifact@v4
+      with:
+        name: allure-report
+        path: build/reports/allure-report
+
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: gh-pages
+        folder: build/reports/allure-report

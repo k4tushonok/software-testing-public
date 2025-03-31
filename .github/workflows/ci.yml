@@ -23,7 +23,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Tests
-        run: ./gradlew test jacocoTestReport allureReport spotbugsMain
+        run: ./gradlew test jacocoTestReport allureReport spotbugsMain --stacktrace
 
       - name: Verify Test Coverage
         run: ./gradlew jacocoTestCoverageVerification

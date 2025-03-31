@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'jacoco'
     id 'io.qameta.allure' version "2.11.2"
+    id 'com.github.spotbugs' version '5.0.9'
 }
 
 group = 'org.usvm'
@@ -65,5 +66,18 @@ allure {
                 enabled.set(true)
             }
         }
+    }
+}
+
+spotbugs {
+    toolVersion = '4.7.0'
+    effort = 'max'
+    reportLevel = 'high'
+}
+
+tasks.withType(com.github.spotbugs.SpotBugsTask).configureEach {
+    reports {
+        html.enabled = true
+        xml.enabled = true
     }
 }

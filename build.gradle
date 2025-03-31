@@ -75,7 +75,7 @@ spotbugs {
     reportLevel = 'high'
 }
 
-tasks.withType(com.github.spotbugs.SpotBugsTask).configureEach {
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
     reports {
         html.enabled = true
         xml.enabled = true

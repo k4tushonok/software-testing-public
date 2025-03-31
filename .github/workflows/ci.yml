@@ -23,10 +23,19 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Tests
-        run: ./gradlew test
+        run: ./gradlew test jacocoTestReport
+
+      - name: Verify Test Coverage
+        run: ./gradlew jacocoTestCoverageVerification
 
       - name: Upload Test Reports
         uses: actions/upload-artifact@v4
         with:
           name: test-reports
           path: build/test-results
+
+      - name: Upload JaCoCo Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: build/reports/jacoco/test/html

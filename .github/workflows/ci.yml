@@ -52,21 +52,21 @@ jobs:
           name: allure-report
           path: build/reports/allure-report
 
-deploy:
-  needs: test
-  runs-on: ubuntu-latest
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Download Allure Report
-      uses: actions/download-artifact@v4
-      with:
-        name: allure-report
-        path: build/reports/allure-report
+      - name: Download Allure Report
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-report
+          path: build/reports/allure-report
 
-    - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@v4
-      with:
-        branch: gh-pages
-        folder: build/reports/allure-report
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: build/reports/allure-report

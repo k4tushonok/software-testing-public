@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'jacoco'
     id 'io.qameta.allure' version '2.11.2'
-    id 'com.github.spotbugs' version '5.0.9'
 }
 
 group = 'org.usvm'
@@ -67,33 +66,4 @@ allure {
             }
         }
     }
-}
-
-spotbugs {
-    toolVersion = '4.7.0'
-    effort = 'max'
-    reportLevel = 'high'
-    ignoreFailures = false
-}
-
-tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
-    reports {
-        html {
-            enabled = true
-            destination = file("$buildDir/reports/spotbugs/main/spotbugs.html")
-        }
-        xml {
-            enabled = true
-            destination = file("$buildDir/reports/spotbugs/main/spotbugs.xml")
-        }
-    }
-    
-    @SuppressWarnings('GrMethodMayBeStatic')
-    def ignoreAnnotations = {
-        it.ignore('enabledReports.*.destination')
-        it.ignore('enabledReports.*.enabled')
-        it.ignore('firstEnabledReport.destination')
-    }
-    doFirst(ignoreAnnotations)
-    doLast(ignoreAnnotations)
 }

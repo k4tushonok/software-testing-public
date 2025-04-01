@@ -8,19 +8,22 @@ on:
 
 jobs:
   build:
+    name: Build and Test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: 17
           distribution: temurin
+          java-version: 17
 
-      - name: Make Gradlew Executable
-        run: chmod +x gradlew
+      - name: Build project
+        run: ./gradlew build
 
       - name: Run Tests and Generate Reports
         run: ./gradlew test jacocoTestReport allureReport --stacktrace
@@ -65,6 +68,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
+
+      - name: Set up JDK 17 for CodeQL
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build project for CodeQL
+        run: ./gradlew build
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2

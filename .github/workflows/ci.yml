@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -22,8 +22,8 @@ jobs:
       - name: Make Gradlew Executable
         run: chmod +x gradlew
 
-      - name: Run Tests
-        run: ./gradlew test jacocoTestReport allureReport spotbugsMain --stacktrace
+      - name: Run Tests and Generate Reports
+        run: ./gradlew test jacocoTestReport allureReport --stacktrace
 
       - name: Verify Test Coverage
         run: ./gradlew jacocoTestCoverageVerification
@@ -52,27 +52,24 @@ jobs:
           name: allure-report
           path: build/reports/allure-report
 
-      - name: Upload SpotBugs Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: spotbugs-report
-          path: build/reports/spotbugs/main/html
-
-  deploy:
-    needs: test
+  codeql-analysis:
+    name: CodeQL Analysis
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    strategy:
+      matrix:
+        language: [ 'java' ]
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download Allure Report
-        uses: actions/download-artifact@v4
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
         with:
-          name: allure-report
-          path: build/reports/allure-report
+          languages: ${{ matrix.language }}
 
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: build/reports/allure-report
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
